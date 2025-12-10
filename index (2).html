@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>הצעת תוכן | Y_G_M Solutions × Amir Buhadana Group</title>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&family=Assistant:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --black: #0a0a0a;
+            --white: #fafafa;
+            --gray-100: #f5f5f5;
+            --gray-200: #e5e5e5;
+            --gray-300: #d4d4d4;
+            --gray-400: #a3a3a3;
+            --gray-500: #737373;
+            --gray-600: #525252;
+            --accent: #1a1a1a;
+            --accent-light: #2a2a2a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Heebo', sans-serif;
+            background: var(--white);
+            color: var(--black);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gray-200);
+            z-index: 1000;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--black);
+            width: 0%;
+            transition: width 0.1s ease-out;
+        }
+
+        /* Navigation Dots */
+        .nav-dots {
+            position: fixed;
+            left: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 1000;
+        }
+
+        .nav-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--gray-300);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .nav-dot:hover {
+            background: var(--gray-500);
+            transform: scale(1.2);
+        }
+
+        .nav-dot.active {
+            background: var(--black);
+            transform: scale(1.3);
+        }
+
+        /* Section Base */
+        .section {
+            min-height: 100vh;
+            scroll-snap-align: start;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 40px;
+            position: relative;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-content {
+            max-width: 900px;
+            width: 100%;
+        }
+
+        /* Section Numbers */
+        .section-number {
+            font-size: 180px;
+            font-weight: 900;
+            color: var(--gray-100);
+            position: absolute;
+            top: 50%;
+            right: -40px;
+            transform: translateY(-50%);
+            line-height: 1;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Typography */
+        .section-tag {
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--gray-500);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-tag::before {
+            content: '';
+            width: 30px;
+            height: 1px;
+            background: var(--gray-400);
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 30px;
+            letter-spacing: -1px;
+        }
+
+        h2 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 25px;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: var(--gray-600);
+            font-weight: 400;
+            max-width: 600px;
+            line-height: 1.7;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--white) 0%, var(--gray-100) 100%);
+        }
+
+        .hero-brands {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .brand-pill {
+            padding: 10px 24px;
+            background: var(--black);
+            color: var(--white);
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .brand-pill.outline {
+            background: transparent;
+            color: var(--black);
+            border: 1.5px solid var(--black);
+        }
+
+        .brand-connector {
+            font-size: 24px;
+            color: var(--gray-400);
+        }
+
+        /* Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .card {
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            border-radius: 16px;
+            padding: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: var(--black);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--gray-100);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .card h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            font-size: 0.95rem;
+            color: var(--gray-600);
+            line-height: 1.6;
+        }
+
+        /* Feature List */
+        .feature-list {
+            list-style: none;
+            margin-top: 30px;
+        }
+
+        .feature-list li {
+            padding: 16px 0;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            font-size: 1.05rem;
+        }
+
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+
+        .feature-check {
+            width: 24px;
+            height: 24px;
+            background: var(--black);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .feature-check::after {
+            content: '✓';
+            color: var(--white);
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 30px 20px;
+            background: var(--gray-100);
+            border-radius: 16px;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--black);
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--gray-600);
+            font-weight: 500;
+        }
+
+        /* Highlight Box */
+        .highlight-box {
+            background: var(--black);
+            color: var(--white);
+            padding: 40px;
+            border-radius: 20px;
+            margin-top: 40px;
+        }
+
+        .highlight-box h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .highlight-box p {
+            color: var(--gray-400);
+            line-height: 1.7;
+        }
+
+        /* Two Column Layout */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .two-col-content h2 {
+            margin-bottom: 20px;
+        }
+
+        .two-col-visual {
+            background: var(--gray-100);
+            border-radius: 20px;
+            padding: 40px;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* Phone Mockup */
+        .phone-mockup {
+            width: 200px;
+            height: 400px;
+            background: var(--black);
+            border-radius: 30px;
+            padding: 10px;
+            margin: 0 auto;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+        }
+
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background: var(--white);
+            border-radius: 22px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .phone-header {
+            height: 50px;
+            background: var(--gray-100);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--gray-600);
+        }
+
+        .phone-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 12px;
+        }
+
+        .story-dots {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+            padding: 8px;
+        }
+
+        .story-dot {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--gray-300), var(--gray-400));
+            border: 2px solid var(--gray-200);
+        }
+
+        .mini-post {
+            background: var(--gray-100);
+            border-radius: 8px;
+            height: 80px;
+        }
+
+        /* Carousel Demo */
+        .carousel-demo {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            padding: 20px 0;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .carousel-slide {
+            min-width: 160px;
+            height: 200px;
+            background: var(--white);
+            border-radius: 12px;
+            border: 1px solid var(--gray-200);
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            flex-shrink: 0;
+        }
+
+        .carousel-slide-number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--gray-200);
+        }
+
+        .carousel-slide-text {
+            margin-top: auto;
+            font-size: 0.85rem;
+            color: var(--gray-600);
+            line-height: 1.5;
+        }
+
+        /* Goal Box */
+        .goal-box {
+            background: linear-gradient(135deg, var(--gray-100) 0%, var(--white) 100%);
+            border: 1px solid var(--gray-200);
+            border-radius: 16px;
+            padding: 30px;
+            margin-top: 30px;
+        }
+
+        .goal-label {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--gray-500);
+            margin-bottom: 12px;
+        }
+
+        .goal-text {
+            font-size: 1.15rem;
+            font-weight: 500;
+            line-height: 1.6;
+        }
+
+        /* Final Section */
+        .final-section {
+            background: var(--black);
+            color: var(--white);
+        }
+
+        .final-section .section-number {
+            color: var(--accent-light);
+        }
+
+        .final-section .section-tag {
+            color: var(--gray-500);
+        }
+
+        .final-section .section-tag::before {
+            background: var(--gray-600);
+        }
+
+        .final-section h2 {
+            color: var(--white);
+        }
+
+        .final-section .subtitle {
+            color: var(--gray-400);
+        }
+
+        .signature {
+            margin-top: 60px;
+            padding-top: 40px;
+            border-top: 1px solid var(--gray-600);
+        }
+
+        .signature-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .signature-title {
+            color: var(--gray-500);
+            font-size: 0.95rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .section {
+                padding: 40px 25px;
+            }
+
+            .section-number {
+                font-size: 120px;
+                right: -20px;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .two-col {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .nav-dots {
+                left: 15px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .section-number {
+                font-size: 80px;
+                opacity: 0.5;
+            }
+
+            .hero-brands {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .brand-connector {
+                display: none;
+            }
+
+            .phone-mockup {
+                width: 160px;
+                height: 320px;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-in {
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+    </style>
+</head>
+<body>
+    <!-- Progress Bar -->
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <!-- Navigation Dots -->
+    <nav class="nav-dots" id="navDots">
+        <button class="nav-dot active" data-section="0" aria-label="Section 1"></button>
+        <button class="nav-dot" data-section="1" aria-label="Section 2"></button>
+        <button class="nav-dot" data-section="2" aria-label="Section 3"></button>
+        <button class="nav-dot" data-section="3" aria-label="Section 4"></button>
+        <button class="nav-dot" data-section="4" aria-label="Section 5"></button>
+        <button class="nav-dot" data-section="5" aria-label="Section 6"></button>
+        <button class="nav-dot" data-section="6" aria-label="Section 7"></button>
+        <button class="nav-dot" data-section="7" aria-label="Section 8"></button>
+    </nav>
+
+    <!-- Section 1: Hero -->
+    <section class="section hero" id="section-0">
+        <span class="section-number">01</span>
+        <div class="section-content">
+            <div class="hero-brands">
+                <span class="brand-pill">Y_G_M Solutions</span>
+                <span class="brand-connector">×</span>
+                <span class="brand-pill outline">Amir Buhadana Group</span>
+            </div>
+            <h1>הצעה לשדרוג<br>נוכחות דיגיטלית</h1>
+            <p class="subtitle">
+                אסטרטגיה, תוכן ושפה ויזואלית שיהפכו את המותג שלכם למותג שזוכרים. מאינסטגרם ועד האתר — הכל תחת קונספט אחד חד וברור.
+            </p>
+        </div>
+    </section>
+
+    <!-- Section 2: Strategy -->
+    <section class="section" id="section-1">
+        <span class="section-number">02</span>
+        <div class="section-content">
+            <span class="section-tag">שלב ראשון</span>
+            <h2>פיתוח אסטרטגיה ופוזישנינג</h2>
+            <p class="subtitle">בשלב הזה נבנה את "עמוד השדרה" של המותג — הבסיס שעליו הכל ייבנה.</p>
+            
+            <div class="cards-grid">
+                <div class="card">
+                    <div class="card-icon">🎯</div>
+                    <h3>הגדרת זהות</h3>
+                    <p>מי המותג, מה הוא מבטיח, ומה הערך הייחודי שהוא נותן ללקוחות</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">👥</div>
+                    <h3>מיקוד קהל יעד</h3>
+                    <p>קוסמטיקאיות, לקוחות פרטיות, טווח גילאים, סוגי בעיות עור</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">💬</div>
+                    <h3>טון דיבור</h3>
+                    <p>מקצועי, חם, יוקרתי, נגיש — או שילוב חכם שמתאים למותג</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">⚡</div>
+                    <h3>בידול מתחרים</h3>
+                    <p>מה המותג נותן שאחרים לא? זה מה שיגרום לאנשים לבחור בכם</p>
+                </div>
+            </div>
+
+            <div class="goal-box">
+                <div class="goal-label">המטרה</div>
+                <p class="goal-text">שמישהו שנכנס לעמוד יבין תוך 2 שניות מי אתם ולמה לבחור בכם.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 3: Visual Language -->
+    <section class="section" id="section-2">
+        <span class="section-number">03</span>
+        <div class="section-content">
+            <div class="two-col">
+                <div class="two-col-content">
+                    <span class="section-tag">שפה ויזואלית</span>
+                    <h2>גיבוש ה"לוק" של המותג</h2>
+                    <p class="subtitle">השפה הוויזואלית היא מה שהופך עמוד רגיל למותג. זה מה שגורם לאנשים לזהות אתכם מיד.</p>
+                    
+                    <ul class="feature-list">
+                        <li>
+                            <span class="feature-check"></span>
+                            <span>פלטת צבעים אחידה וייחודית</span>
+                        </li>
+                        <li>
+                            <span class="feature-check"></span>
+                            <span>סגנון צילום ועיבוד קבוע</span>
+                        </li>
+                        <li>
+                            <span class="feature-check"></span>
+                            <span>בחירת פונטים שמתאימים למותג</span>
+                        </li>
+                        <li>
+                            <span class="feature-check"></span>
+                            <span>תבניות עיצוב לפיד, רילז וקרוסלות</span>
+                        </li>
+                        <li>
+                            <span class="feature-check"></span>
+                            <span>אחידות בין אינסטגרם לאתר</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="two-col-visual">
+                    <div class="phone-mockup">
+                        <div class="phone-screen">
+                            <div class="phone-header">@amir_buhadana_group</div>
+                            <div class="phone-content">
+                                <div class="story-dots">
+                                    <div class="story-dot"></div>
+                                    <div class="story-dot"></div>
+                                    <div class="story-dot"></div>
+                                </div>
+                                <div class="mini-post"></div>
+                                <div class="mini-post"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 4: Reels -->
+    <section class="section" id="section-3">
+        <span class="section-number">04</span>
+        <div class="section-content">
+            <span class="section-tag">תוכן וידאו</span>
+            <h2>2 רילזים בשבוע</h2>
+            <p class="subtitle">שילוב חכם בין פרסומות לתוכן UGC — כדי ללכוד גם תשומת לב וגם אמון.</p>
+
+            <div class="cards-grid">
+                <div class="card">
+                    <div class="card-icon">🎬</div>
+                    <h3>פרסומת קצרה</h3>
+                    <p>מבליטה מוצר או חוויה, מחזקת את המותג, מראה איכות ומקצועיות ונראות פרימיום</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">📱</div>
+                    <h3>UGC מבוים</h3>
+                    <p>תוכן שנראה "אמיתי מהשטח" — מרגיש פחות פרסומי, מייצר אמון גבוה וממיר טוב יותר</p>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <h3>למה השילוב הזה עובד?</h3>
+                <p>פרסומת בונה תדמית פרימיום. UGC בונה אמון. ביחד — אתם מקבלים את שני העולמות: מותג שנראה מקצועי אבל גם אמין ונגיש.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 5: Carousels -->
+    <section class="section" id="section-4">
+        <span class="section-number">05</span>
+        <div class="section-content">
+            <span class="section-tag">תוכן חינוכי</span>
+            <h2>2 קרוסלות בשבוע</h2>
+            <p class="subtitle">קרוסלה היא סוג התוכן הכי מסביר, הכי חינוכי והכי "שומר משתמש במסך".</p>
+
+            <div class="carousel-demo">
+                <div class="carousel-slide">
+                    <span class="carousel-slide-number">01</span>
+                    <p class="carousel-slide-text">כותרת שתופסת תשומת לב</p>
+                </div>
+                <div class="carousel-slide">
+                    <span class="carousel-slide-number">02</span>
+                    <p class="carousel-slide-text">הצגת הבעיה שהלקוח מרגיש</p>
+                </div>
+                <div class="carousel-slide">
+                    <span class="carousel-slide-number">03</span>
+                    <p class="carousel-slide-text">הסבר על הפתרון</p>
+                </div>
+                <div class="carousel-slide">
+                    <span class="carousel-slide-number">04</span>
+                    <p class="carousel-slide-text">תוצאות והוכחה</p>
+                </div>
+                <div class="carousel-slide">
+                    <span class="carousel-slide-number">05</span>
+                    <p class="carousel-slide-text">קריאה לפעולה</p>
+                </div>
+            </div>
+
+            <ul class="feature-list">
+                <li>
+                    <span class="feature-check"></span>
+                    <span>מפרקות מידע מורכב לשקופיות קצרות וקלות לעיכול</span>
+                </li>
+                <li>
+                    <span class="feature-check"></span>
+                    <span>יוצרות "עצירת גלילה" — יש סיפור שמתקדם</span>
+                </li>
+                <li>
+                    <span class="feature-check"></span>
+                    <span>מספקות ערך אמיתי — והערך בונה אמון ומכירות</span>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Section 6: Stories -->
+    <section class="section" id="section-5">
+        <span class="section-number">06</span>
+        <div class="section-content">
+            <span class="section-tag">נוכחות יומית</span>
+            <h2>2 סטוריז ביום</h2>
+            <p class="subtitle">הסטורי הוא הכלי שמייצר נוכחות יומיומית ומעלה מעורבות. זה התוכן הראשון שהעוקב רואה.</p>
+
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">40+</div>
+                    <div class="stat-label">סטוריז בחודש</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">5</div>
+                    <div class="stat-label">ימים בשבוע</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">נוכחות מתמשכת</div>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <h3>למה זה קריטי לקוסמטיקה?</h3>
+                <p>קהלים שקונים בקוסמטיקה צריכים חיזוק יומי. סטורי מייצר תחושה שהמותג "חי" ולא נטוש — זה בונה אמון ויחס אישי שמוביל לרכישה.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 7: Templates & Management -->
+    <section class="section" id="section-6">
+        <span class="section-number">07</span>
+        <div class="section-content">
+            <span class="section-tag">ניהול ומערכת</span>
+            <h2>טמפלטים + Visual System</h2>
+            <p class="subtitle">מערכת עבודה מסודרת שמבטיחה אחידות, חיסכון בזמן וזיהוי מותג מיידי.</p>
+
+            <div class="two-col">
+                <div>
+                    <h3 style="font-size: 1.2rem; margin-bottom: 20px;">ניהול תוכן שוטף</h3>
+                    <ul class="feature-list">
+                        <li>
+                            <span class="feature-check"></span>
+                            <span>בניית לוח תוכן חודשי</span>
+                        </li>
+                        <li>
+                            <span class="feature-check"></span>
+                            <span>כתיבת טקסטים וכותרות</span>
+                        </li>
+                        <li>
+                            <span class="feature-check"></span>
+                            <span>עריכה ויזואלית אחידה</span>
+                        </li>
+                        <li>
+                            <span class="feature-check"></span>
+                            <span>פרסום ותזמון</span>
+                        </li>
+                        <li>
+                            <span class="feature-check"></span>
+                            <span>מעקב תובנות ושיפור</span>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 style="font-size: 1.2rem; margin-bottom: 20px;">Visual System</h3>
+                    <ul class="feature-list">
+                        <li>
+                            <span class="feature-check"></span>
+                            <span>סגנון תמונות קבוע</span>
+                        </li>
+                        <li>
+                            <span class="feature-check"></span>
+                            <span>צבעים וצורות שחוזרים</span>
+                        </li>
+                        <li>
+                            <span class="feature-check"></span>
+                            <span>שימוש עקבי באלמנטים</span>
+                        </li>
+                        <li>
+                            <span class="feature-check"></span>
+                            <span>יחס נכון בין טקסט לתמונה</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="goal-box">
+                <div class="goal-label">ההבדל</div>
+                <p class="goal-text">זה מה שמבדיל בין מותג מקצועי לעסק שפשוט "מעלה פוסטים".</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 8: Website -->
+    <section class="section final-section" id="section-7">
+        <span class="section-number">08</span>
+        <div class="section-content">
+            <span class="section-tag">שדרוג האתר</span>
+            <h2>שיפור תוכן האתר</h2>
+            <p class="subtitle">נראות פרימיום + שיפור המרות. שהאתר יעבוד בשבילכם, לא נגדכם.</p>
+
+            <div class="cards-grid" style="margin-top: 40px;">
+                <div class="card" style="background: var(--accent-light); border-color: var(--accent-light);">
+                    <h3 style="color: var(--white);">פידבק מעמיק</h3>
+                    <p style="color: var(--gray-400);">על כל עמוד מוצר — מה עובד, מה לא, ומה צריך לשנות</p>
+                </div>
+                <div class="card" style="background: var(--accent-light); border-color: var(--accent-light);">
+                    <h3 style="color: var(--white);">שיפור תמונות</h3>
+                    <p style="color: var(--gray-400);">המלצות לקונספט, תאורה ושימושיות + יצירת תמונות AI</p>
+                </div>
+                <div class="card" style="background: var(--accent-light); border-color: var(--accent-light);">
+                    <h3 style="color: var(--white);">באנרים חדשים</h3>
+                    <p style="color: var(--gray-400);">עיצוב באנרים שממירים טוב יותר ומושכים תשומת לב</p>
+                </div>
+                <div class="card" style="background: var(--accent-light); border-color: var(--accent-light);">
+                    <h3 style="color: var(--white);">טקסטים להמרה</h3>
+                    <p style="color: var(--gray-400);">שינוי טקסטים לקצרים, ברורים ובנויים למכירה</p>
+                </div>
+            </div>
+
+            <div class="signature">
+                <div class="signature-name">Y_G_M Solutions</div>
+                <p class="signature-title">אסטרטגיה דיגיטלית | תוכן | עיצוב</p>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Progress Bar
+        function updateProgressBar() {
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = (scrollTop / docHeight) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        // Section Visibility
+        const sections = document.querySelectorAll('.section');
+        const navDots = document.querySelectorAll('.nav-dot');
+
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.5
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    
+                    // Update nav dots
+                    const sectionIndex = Array.from(sections).indexOf(entry.target);
+                    navDots.forEach((dot, index) => {
+                        dot.classList.toggle('active', index === sectionIndex);
+                    });
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(section => observer.observe(section));
+
+        // Nav Dots Click
+        navDots.forEach(dot => {
+            dot.addEventListener('click', () => {
+                const sectionIndex = dot.getAttribute('data-section');
+                sections[sectionIndex].scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+
+        // Scroll Events
+        window.addEventListener('scroll', updateProgressBar);
+        
+        // Initial state
+        sections[0].classList.add('visible');
+    </script>
+</body>
+</html>
